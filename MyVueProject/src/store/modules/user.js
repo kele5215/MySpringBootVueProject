@@ -11,7 +11,7 @@ const actions = {
           if (res.code === 0) {
             if (res.data.success) {
               Message.success(res.data.msg)
-              //commit('SET_TOKEN', res.data.token)
+              // commit('SET_TOKEN', res.data.token)
             } else {
               Message.error(res.data.msg)
             }
@@ -24,7 +24,7 @@ const actions = {
     })
   },
   loginOut ({ commit }) {
-    //commit('DEL_TOKEN')
+    // commit('DEL_TOKEN')
     resetRouter()
     router.push({
       path: '/login',

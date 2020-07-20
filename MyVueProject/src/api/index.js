@@ -6,7 +6,8 @@ const $axios = axios.create({
   // 设置超时时间
   timeout: 30000,
   // 基础url，会在请求url中自动添加前置链接
-  baseURL: process.env.VUE_APP_BASE_API
+  // baseURL: process.env.VUE_APP_BASE_API
+  baseURL: 'http://192.168.31.23:8088/'
 })
 
 // 在全局请求和响应拦截器中添加请求状态
@@ -66,7 +67,7 @@ export const postRequest = (url, params) => {
   console.log(url)
   return axios({
     method: 'post',
-    url,
+    url: 'http://192.168.31.23:8088/' + url,
     data: params,
     headers: {
       'Content-Type': 'application/json; charset=UTF-8'
