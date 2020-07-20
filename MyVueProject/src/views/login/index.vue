@@ -101,9 +101,53 @@ export default {
         this.loginForm.password === this.validCredentials.password
       ) {
         this.$message.success('Login successfull');
+        this._login()
       } else {
         this.$message.error('Username or password is invalid');
       }
+    },
+    _login () {
+      this.$store
+        .dispatch('user/_login', this.loginForm)
+        .then(res => {
+          if (!res.data.success) {
+            // this.refresh()
+          } else {
+            this.$router.push(this.$route.query.redirect)
+            // if (this.notifyObj) {
+            //   this.notifyObj.close()
+            // }
+            // this.notifyObj = null
+          }
+        })
+        .catch(error => {
+          // this.refresh()
+          this.$message.error(error.message)
+        })
+    },
+
+    handleLogin () {
+      this.loading = true;
+      this.$store
+        .dispatch('user/_login', this.loginForm)
+        .then(response => {
+          this.loading = false;
+          const code = response.data.success;
+          if (code === 200) {
+            this.$router.push({
+              path: '/success',
+              query: { data: response.data.data }
+            });
+          } else {
+            this.$router.push({
+              path: '/error',
+              query: { message: response.data.message }
+            });
+          }
+        })
+        .catch(() => {
+          this.loading = false;
+        });
     }
   }
 };

@@ -1,4 +1,4 @@
-import $axios from './index'
+import * as $axios from './index'
 
 export function login (data) {
   const url = '/login'

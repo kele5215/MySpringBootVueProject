@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-import Home from '../views/Home.vue'
+// import Home from '../views/Home.vue'
 // import { create } from 'core-js/fn/object'
 import getTitle from '@/utils/getTitle'
 
@@ -17,7 +17,15 @@ const currencyRoutes = [
   {
     path: '/',
     name: 'Home',
-    component: Home
+    redirect: '/dashbord',
+    children: [
+      {
+        path: 'dashbord',
+        name: 'Dashbord',
+        component: () => import('@/views/dashboard'),
+        meta: { title: '首页', icon: 'el-icon-s-data' }
+      }
+    ]
   },
   {
     path: '/about',
@@ -49,6 +57,12 @@ const createRouter = () => {
 }
 
 const router = createRouter()
+
+// 解决addRoute不能删除动态路由问题
+export function resetRouter () {
+  const reset = createRouter()
+  router.matcher = reset.matcher
+}
 
 // 导航守卫
 router.beforeEach((to, from, next) => {

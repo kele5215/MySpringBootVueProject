@@ -10,6 +10,7 @@ const modules = {}
 files.keys().forEach(key => {
   const name = path.basename(key, '.js')
   modules[name] = files(key).default || files(key)
+  console.log(modules)
 })
 
 const store = new Vuex.Store({

@@ -63,6 +63,7 @@ $axios.interceptors.response.use(response => {
 // 请求封装完成后，还需要对方法进行封装，方便调用
 // const base = $axios.baseURL;
 export const postRequest = (url, params) => {
+  console.log(url)
   return axios({
     method: 'post',
     url,
