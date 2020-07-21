@@ -8,14 +8,12 @@ const actions = {
     return new Promise((resolve, reject) => {
       login(formdatas)
         .then(res => {
-          if (res.code === 0) {
-            if (res.data.success) {
-              Message.success(res.data.msg)
-              // commit('SET_TOKEN', res.data.token)
-            } else {
-              Message.error(res.data.msg)
-            }
+          if (res.data.code === 200) {
+            Message.success(res.data.message)
+            // commit('SET_TOKEN', res.data.token)
             resolve(res)
+          } else {
+            Message.error(res.data.message)
           }
         })
         .catch(error => {

@@ -15,6 +15,12 @@ const currencyRoutes = [
     hidden: true
   },
   {
+    path: '/error',
+    name: '404',
+    component: () => import('@/views/error-page/404.vue'),
+    hidden: true
+  },
+  {
     path: '/',
     name: 'Home',
     redirect: '/dashbord',

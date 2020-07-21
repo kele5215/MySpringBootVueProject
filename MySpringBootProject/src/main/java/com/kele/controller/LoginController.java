@@ -17,6 +17,4 @@ public class LoginController {
 		else
 			return CommonResult.validateFailed();
 	}
-
-
 }

@@ -50,12 +50,12 @@ export default {
   data () {
     return {
       validCredentials: {
-        username: 'lightscope',
-        password: 'lightscope'
-      },
-      loginForm: {
         username: 'admin',
         password: '123456'
+      },
+      loginForm: {
+        username: '',
+        password: ''
       },
       loading: false,
       rules: {
@@ -97,8 +97,8 @@ export default {
       await this.simulateLogin();
       this.loading = false;
       if (
-        this.loginForm.username === this.validCredentials.username &&
-        this.loginForm.password === this.validCredentials.password
+        this.loginForm.username !== '' &&
+        this.loginForm.password !== ''
       ) {
         this.$message.success('Login successfull');
         this._login()
@@ -110,8 +110,13 @@ export default {
       this.$store
         .dispatch('user/_login', this.loginForm)
         .then(res => {
-          if (!res.data.success) {
+          console.log(res.data);
+          if (res.data.code !== 200) {
             // this.refresh()
+            this.$router.push({
+              path: '/error',
+              query: { message: res.data.message }
+            });
           } else {
             this.$router.push(this.$route.query.redirect)
             // if (this.notifyObj) {
@@ -131,8 +136,9 @@ export default {
       this.$store
         .dispatch('user/_login', this.loginForm)
         .then(response => {
+          console.log(response);
           this.loading = false;
-          const code = response.data.success;
+          const code = response.data.code;
           if (code === 200) {
             this.$router.push({
               path: '/success',
