@@ -67,7 +67,7 @@ export const postRequest = (url, params) => {
   console.log(url)
   return axios({
     method: 'post',
-    url: 'http://10.1.4.155:8088/' + url,
+    url: 'http://192.168.31.23:8088/' + url,
     data: params,
     headers: {
       'Content-Type': 'application/json; charset=UTF-8'

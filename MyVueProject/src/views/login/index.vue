@@ -107,18 +107,19 @@ export default {
       }
     },
     _login () {
+      const self = this
       this.$store
         .dispatch('user/_login', this.loginForm)
         .then(res => {
           console.log(res.data);
           if (res.data.code !== 200) {
             // this.refresh()
-            this.$router.push({
+            self.$router.push({
               path: '/error',
               query: { message: res.data.message }
             });
           } else {
-            this.$router.push(this.$route.query.redirect)
+            self.$router.push(self.$router.query.redirect)
             // if (this.notifyObj) {
             //   this.notifyObj.close()
             // }

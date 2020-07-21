@@ -11,10 +11,10 @@ const actions = {
           if (res.data.code === 200) {
             Message.success(res.data.message)
             // commit('SET_TOKEN', res.data.token)
-            resolve(res)
           } else {
             Message.error(res.data.message)
           }
+          resolve(res)
         })
         .catch(error => {
           reject(error)

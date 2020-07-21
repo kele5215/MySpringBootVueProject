@@ -24,6 +24,9 @@ const currencyRoutes = [
     path: '/',
     name: 'Home',
     redirect: '/dashbord',
+    meta: {
+      requireAuth: true
+    },
     children: [
       {
         path: 'dashbord',
@@ -74,16 +77,28 @@ export function resetRouter () {
 router.beforeEach((to, from, next) => {
   // to and from are Route Object,next() must be called to resolve the hook}
   console.log('先判断是否登录')
+  // 如果是登录页则用next方法resolve掉这个钩子
   document.title = getTitle(to.meta.title)
   if (to.path === '/login') {
     next()
   } else {
-    next({
-      path: '/login',
-      query: {
-        redirect: to.fullPath
+    if (to.matched.some((r) => r.meta.requireAuth)) {
+      const user = JSON.parse(localStorage.getItem('user'));
+      // 判断是否已经登录
+      if (user) {
+        console.log('这是通过拦截后到处理', from);
+        next();
+      } else {
+        // 登录成功后重定向到当前页面
+        next({
+          path: '/login',
+          query: { redirect: to.fullPath }
+        });
       }
-    })
+    } else {
+      console.log('这是拦截');
+      next();
+    }
   }
 })
 
