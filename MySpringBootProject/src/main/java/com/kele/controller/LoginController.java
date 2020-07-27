@@ -24,6 +24,7 @@ public class LoginController {
 			String token = TokenUtil.sign(user);
 
 			Map<String, Object> tokenMap = new HashMap<String, Object>();
+			tokenMap.put("userName", user.getUsername());
 			tokenMap.put("token", token);
 
 			return CommonResult.success(tokenMap);

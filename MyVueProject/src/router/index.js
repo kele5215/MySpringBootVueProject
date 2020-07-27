@@ -3,6 +3,7 @@ import VueRouter from 'vue-router'
 // import Home from '../views/Home.vue'
 // import { create } from 'core-js/fn/object'
 import getTitle from '@/utils/getTitle'
+import store from '@/store'
 
 Vue.use(VueRouter)
 
@@ -82,12 +83,21 @@ router.beforeEach((to, from, next) => {
   if (to.path === '/login') {
     next()
   } else {
+    // 检查是否需要登录权限
     if (to.matched.some((r) => r.meta.requireAuth)) {
-      const user = JSON.parse(localStorage.getItem('user'));
+      const token = store.getters.token
       // 判断是否已经登录
-      if (user) {
-        console.log('这是通过拦截后到处理', from);
-        next();
+      if (token) {
+        if (token === 'null' || token === '') {
+          // 登录成功后重定向到当前页面
+          next({
+            path: '/login',
+            query: { redirect: to.fullPath }
+          });
+        } else {
+          console.log('这是通过拦截后到处理', from);
+          next();
+        }
       } else {
         // 登录成功后重定向到当前页面
         next({
@@ -100,6 +110,46 @@ router.beforeEach((to, from, next) => {
       next();
     }
   }
+
+  // if (to.matched.some(record => record.meta.requireAuth)) { // 检查是否需要登录权限
+  //   if (!store.state.auth) { // 检查是否已登录
+  //     if (store.state.token) { // 未登录，但是有token，获取用户信息
+  //       try {
+  //         const data = store.dispatch('getUserInfo', store.state.token)
+  //         if (data.code === 200) {
+  //           next()
+  //         } else {
+  //           window.alert('请登录')
+  //           store.commit('clearToken')
+  //           // 登录成功后重定向到当前页面
+  //           next({
+  //             path: '/login',
+  //             query: { redirect: to.fullPath }
+  //           });
+  //         }
+  //       } catch (err) {
+  //         window.alert('请登录')
+  //         store.commit('clearToken')
+  //         // 登录成功后重定向到当前页面
+  //         next({
+  //           path: '/login',
+  //           query: { redirect: to.fullPath }
+  //         });
+  //       }
+  //     } else {
+  //       window.alert('请登录')
+  //       // 登录成功后重定向到当前页面
+  //       next({
+  //         path: '/login',
+  //         query: { redirect: to.fullPath }
+  //       });
+  //     }
+  //   } else {
+  //     next()
+  //   }
+  // } else {
+  //   next()
+  // }
 })
 
 export default router

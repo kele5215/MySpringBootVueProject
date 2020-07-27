@@ -16,9 +16,10 @@ const mutations = {
   DEL_TOKEN (state) {
     state.token = ''
     state.userName = ''
-    state.roles = ''
-    state.introduce = ''
     localStorage.removeItem('token')
+  },
+  SET_NAME (state, payload) {
+    state.userName = payload
   }
 }
 
@@ -30,7 +31,8 @@ const actions = {
         .then(res => {
           if (res.data.code === 200) {
             Message.success(res.data.message)
-            commit('SET_TOKEN', res.data.token)
+            commit('SET_NAME', res.data.data.userName)
+            commit('SET_TOKEN', res.data.data.token)
           } else {
             Message.error(res.data.message)
           }
