@@ -1,6 +1,7 @@
 import axios from 'axios'
 import { Loading, Message } from 'element-ui'
 import router from '@/router'
+import store from '@/store'
 
 const $axios = axios.create({
   // 设置超时时间
@@ -16,6 +17,11 @@ let loading = null
 // 请求拦截器
 $axios.interceptors.request.use(config => {
   loading = Loading.service({ text: '拼命加载中' })
+  const token = store.getters.token
+  if (token) {
+    // 请求头部添加token
+    config.header.Authorization = token
+  }
   return config
 }, error => {
   return Promise.reject(error)
@@ -67,7 +73,7 @@ export const postRequest = (url, params) => {
   console.log(url)
   return axios({
     method: 'post',
-    url: 'http://192.168.31.23:8088/' + url,
+    url: 'http://10.1.4.155:8088/' + url,
     data: params,
     headers: {
       'Content-Type': 'application/json; charset=UTF-8'

@@ -143,7 +143,7 @@ export default {
           if (code === 200) {
             this.$router.push({
               path: '/success',
-              query: { data: response.data.data }
+              query: { data: response.data.message }
             });
           } else {
             this.$router.push({

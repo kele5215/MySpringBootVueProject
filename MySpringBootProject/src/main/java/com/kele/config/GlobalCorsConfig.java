@@ -3,7 +3,6 @@ package com.kele.config;
 import java.util.Arrays;
 import java.util.List;
 
-import org.springframework.context.annotation.Configuration;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
@@ -11,7 +10,7 @@ import org.springframework.web.filter.CorsFilter;
 /**
  * 全局跨域配置
  */
-@Configuration
+// @Configuration
 public class GlobalCorsConfig extends CorsFilter {
 
 	/**
