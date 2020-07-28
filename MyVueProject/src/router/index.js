@@ -80,36 +80,84 @@ router.beforeEach((to, from, next) => {
   console.log('先判断是否登录')
   // 如果是登录页则用next方法resolve掉这个钩子
   document.title = getTitle(to.meta.title)
-  if (to.path === '/login') {
-    next()
-  } else {
-    // 检查是否需要登录权限
-    if (to.matched.some((r) => r.meta.requireAuth)) {
-      const token = store.getters.token
-      // 判断是否已经登录
-      if (token) {
-        if (token === 'null' || token === '') {
-          // 登录成功后重定向到当前页面
-          next({
-            path: '/login',
-            query: { redirect: to.fullPath }
-          });
-        } else {
-          console.log('这是通过拦截后到处理', from);
-          next();
-        }
+
+  // 检查是否需要登录权限
+  if (to.matched.some((r) => r.meta.requireAuth)) {
+    // 不是这种目标拦截的情况（就from.query是空对象）直接next()
+    if (Object.keys(from.query).length === 0) {
+      next()
+    } else {
+      // 是目标拦截的情况，记录redirect
+      const redirect = from.query.redirect
+      // 这个是处理无限循环的问题
+      if (to.path === redirect) {
+        next()
       } else {
-        // 登录成功后重定向到当前页面
+        // 加上query之后，就判断它有了query，就next()跳转进去
+        if (Object.keys(to.query).length > 0) {
+          next()
+        } else {
+          // 第一次跳转to路由是没有query的，我们需要加上query来记录我们需要的目标路由
+          next({
+            path: to.path,
+            query: { redirect: redirect }
+          })
+        }
+      }
+    }
+  } else {
+    const token = store.getters.token
+    if (token === 'null' || token === '') {
+      if (Object.keys(from.query).length === 0) {
+        next()
+      } else {
+        const redirect = from.query.redirect
+        if (to.path === redirect) {
+          next()
+        } else {
+          next({ path: redirect })
+        }
+      }
+    } else {
+      if (to.path === '/login') {
+        next()
+      } else {
         next({
           path: '/login',
           query: { redirect: to.fullPath }
-        });
+        })
       }
-    } else {
-      console.log('这是拦截');
-      next();
     }
   }
+  // if (to.path === '/login') {
+  //   next()
+  // } else {
+  //   // 检查是否需要登录权限
+  //   if (to.matched.some((r) => r.meta.requireAuth)) {
+  //     // 判断是否已经登录
+  //     if (token) {
+  //       if (token === 'null' || token === '') {
+  //         // 登录成功后重定向到当前页面
+  //         next({
+  //           path: '/login',
+  //           query: { redirect: to.fullPath }
+  //         });
+  //       } else {
+  //         console.log('这是通过拦截后到处理', from);
+  //         next();
+  //       }
+  //     } else {
+  //       // 登录成功后重定向到当前页面
+  //       next({
+  //         path: '/login',
+  //         query: { redirect: to.fullPath }
+  //       });
+  //     }
+  //   } else {
+  //     console.log('这是拦截');
+  //     next();
+  //   }
+  // }
 
   // if (to.matched.some(record => record.meta.requireAuth)) { // 检查是否需要登录权限
   //   if (!store.state.auth) { // 检查是否已登录
