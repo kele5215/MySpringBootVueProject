@@ -21,21 +21,24 @@ const currencyRoutes = [
     component: () => import('@/views/error-page/404.vue'),
     hidden: true
   },
+  // {
+  //   path: '/',
+  //   name: 'Home',
+  //   redirect: '/dashbord',
+  //   children: [
+  //     {
+  //       path: 'dashbord',
+  //       name: 'Dashbord',
+  //       component: () => import('@/views/dashboard'),
+  //       meta: { title: '首页', icon: 'el-icon-s-data', requireAuth: true }
+  //     }
+  //   ]
+  // },
   {
     path: '/',
     name: 'Home',
     redirect: '/dashbord',
-    meta: {
-      requireAuth: true
-    },
-    children: [
-      {
-        path: 'dashbord',
-        name: 'Dashbord',
-        component: () => import('@/views/dashboard'),
-        meta: { title: '首页', icon: 'el-icon-s-data' }
-      }
-    ]
+    component: () => import('@/views/dashboard')
   },
   {
     path: '/about',
@@ -77,56 +80,84 @@ export function resetRouter () {
 // 导航守卫
 router.beforeEach((to, from, next) => {
   // to and from are Route Object,next() must be called to resolve the hook}
-  console.log('先判断是否登录')
-  // 如果是登录页则用next方法resolve掉这个钩子
   document.title = getTitle(to.meta.title)
 
-  // 检查是否需要登录权限
-  if (to.matched.some((r) => r.meta.requireAuth)) {
-    // 不是这种目标拦截的情况（就from.query是空对象）直接next()
-    if (Object.keys(from.query).length === 0) {
-      next()
-    } else {
-      // 是目标拦截的情况，记录redirect
-      const redirect = from.query.redirect
-      // 这个是处理无限循环的问题
-      if (to.path === redirect) {
+  console.log('先判断是否登录')
+  if (to.path === '/login') {
+    // 如果是登录页则用next方法resolve掉这个钩子
+    next()
+  } else {
+    const token = store.getters.token
+    // 检查是否需要登录权限
+    if (to.matched.some((r) => r.meta.requireAuth)) {
+      // 判断用户是否登录|
+      if (token) {
+        // 如果来源路由有query
+        // const redirect = from.query.redirect
+        // if (to.path === redirect) {
+        //   // 这行是解决next无限循环的问题
+        //   next()
+        // } else {
+        //   // 跳转到目的路由
+        //   next({ path: redirect })
+        // }
         next()
       } else {
-        // 加上query之后，就判断它有了query，就next()跳转进去
-        if (Object.keys(to.query).length > 0) {
+        if (to.path === '/login') {
           next()
         } else {
-          // 第一次跳转to路由是没有query的，我们需要加上query来记录我们需要的目标路由
+          console.log('qu dao na li ya' + to.path)
           next({
-            path: to.path,
-            query: { redirect: redirect }
+            path: '/login',
+            query: { redirect: to.fullPath }
           })
         }
       }
-    }
-  } else {
-    const token = store.getters.token
-    if (token === 'null' || token === '') {
-      if (Object.keys(from.query).length === 0) {
-        next()
-      } else {
-        const redirect = from.query.redirect
-        if (to.path === redirect) {
-          next()
-        } else {
-          next({ path: redirect })
-        }
-      }
+      // // 不是这种目标拦截的情况（就from.query是空对象）直接next()
+      // if (Object.keys(from.query).length === 0) {
+      //   next()
+      // } else {
+      //   // 是目标拦截的情况，记录redirect
+      //   const redirect = from.query.redirect
+      //   // 这个是处理无限循环的问题
+      //   if (to.path === redirect) {
+      //     next()
+      //   } else {
+      //     // 加上query之后，就判断它有了query，就next()跳转进去
+      //     if (Object.keys(to.query).length > 0) {
+      //       next()
+      //     } else {
+      //       // 第一次跳转to路由是没有query的，我们需要加上query来记录我们需要的目标路由
+      //       next({
+      //         path: to.path,
+      //         query: { redirect: redirect }
+      //       })
+      //     }
+      //   }
+      // }
     } else {
-      if (to.path === '/login') {
-        next()
-      } else {
-        next({
-          path: '/login',
-          query: { redirect: to.fullPath }
-        })
-      }
+      next()
+      // if (token === 'null' || token === '') {
+      //   if (Object.keys(from.query).length === 0) {
+
+      //   } else {
+      //     const redirect = from.query.redirect
+      //     if (to.path === redirect) {
+      //       next()
+      //     } else {
+      //       next({ path: redirect })
+      //     }
+      //   }
+      // } else {
+      //   if (to.path === '/login') {
+      //     next()
+      //   } else {
+      //     next({
+      //       path: '/login',
+      //       query: { redirect: to.fullPath }
+      //     })
+      //   }
+      // }
     }
   }
   // if (to.path === '/login') {

@@ -119,7 +119,13 @@ export default {
               query: { message: res.data.message }
             });
           } else {
-            self.$router.push(self.$router.query.redirect)
+            // https://juejin.im/post/6844903665388486664
+            /*
+            * $router是指整个路由实例,你可以操控整个路由,通过'$router.push'往其中添加任意的路由对象.
+            * $route:是指当前路由实例('$router')跳转到的路由对象;
+            * 路由实例可以包含多个路由对象.它们是父子包含关系
+            */
+            self.$router.push(self.$route.query.redirect)
             // if (this.notifyObj) {
             //   this.notifyObj.close()
             // }
