@@ -2,8 +2,10 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 // import Home from '../views/Home.vue'
 // import { create } from 'core-js/fn/object'
+// @符号就是代表src路径
 import getTitle from '@/utils/getTitle'
 import store from '@/store'
+import Layout from '@/layout'
 
 Vue.use(VueRouter)
 
@@ -12,7 +14,7 @@ const currencyRoutes = [
     path: '/login',
     name: 'Login',
     component: () => import('@/views/login'),
-    meta: { title: '登录页' },
+    meta: { title: '登录页', requireAuth: false },
     hidden: true
   },
   {
@@ -21,24 +23,20 @@ const currencyRoutes = [
     component: () => import('@/views/error-page/404.vue'),
     hidden: true
   },
-  // {
-  //   path: '/',
-  //   name: 'Home',
-  //   redirect: '/dashbord',
-  //   children: [
-  //     {
-  //       path: 'dashbord',
-  //       name: 'Dashbord',
-  //       component: () => import('@/views/dashboard'),
-  //       meta: { title: '首页', icon: 'el-icon-s-data', requireAuth: true }
-  //     }
-  //   ]
-  // },
   {
     path: '/',
     name: 'Home',
+    component: Layout,
     redirect: '/dashbord',
-    component: () => import('@/views/dashboard')
+    meta: { requireAuth: true },
+    children: [
+      {
+        path: 'dashbord',
+        name: 'Dashbord',
+        component: () => import('@/views/dashboard'),
+        meta: { title: '首页', icon: 'el-icon-s-data', requireAuth: true }
+      }
+    ]
   },
   {
     path: '/about',
@@ -63,6 +61,7 @@ const createRouter = () => {
     // mode: 'history',
     // base: process.env.BASE_URL,
     routes: currencyRoutes,
+    // 对于所有路由导航，简单地让页面滚动到顶部
     scrollBehavior () {
       return { x: 0, y: 0 }
     }
@@ -87,26 +86,30 @@ router.beforeEach((to, from, next) => {
     // 如果是登录页则用next方法resolve掉这个钩子
     next()
   } else {
-    const token = store.getters.token
     // 检查是否需要登录权限
     if (to.matched.some((r) => r.meta.requireAuth)) {
+      const token = store.getters.token
       // 判断用户是否登录|
       if (token) {
         // 如果来源路由有query
-        // const redirect = from.query.redirect
-        // if (to.path === redirect) {
-        //   // 这行是解决next无限循环的问题
-        //   next()
-        // } else {
-        //   // 跳转到目的路由
-        //   next({ path: redirect })
-        // }
-        next()
+        const redirect = from.query.redirect
+        if (to.path === redirect) {
+          // 这行是解决next无限循环的问题
+          // next() 表示路由成功进行，直接进入to的路由地址，不会再次调用router.beforeEach()了；
+          next()
+        } else {
+          // 跳转到目的路由
+          // next('/login') 表示路由拦截成功，重定向至/login，并且还会再次调用router.beforeEach()；
+          if (redirect === '/') {
+            next()
+          } else {
+            next({ path: redirect })
+          }
+        }
       } else {
         if (to.path === '/login') {
           next()
         } else {
-          console.log('qu dao na li ya' + to.path)
           next({
             path: '/login',
             query: { redirect: to.fullPath }

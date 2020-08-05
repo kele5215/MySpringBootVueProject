@@ -44,7 +44,7 @@ const actions = {
     })
   },
   loginOut ({ commit }) {
-    // commit('DEL_TOKEN')
+    commit('DEL_TOKEN')
     resetRouter()
     router.push({
       path: '/login',
