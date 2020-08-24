@@ -66,3 +66,24 @@
     top: -3px;
   }
 }
+
+// sideBar
+#app {
+  .sideBar {
+    width: $sideBarWidth;
+    height: calc(100% - 50px);
+    background-color: $dark-blue;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    overflow: hidden;
+    transition: width 0.3s;
+    z-index: 999;
+    .el-scrollbar {
+      height: 100%;
+      .el-scrollbar__wrap {
+        overflow-x: hidden !important;
+      }
+    }
+  }
+}

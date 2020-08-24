@@ -1,0 +1,11 @@
+<template>
+  <div class="breadDiv" id="domBread">
+    <!-- 显示当前页面的路径，快速返回之前的任意页面。 -->
+    <el-breadcrumb separator-class="el-icon-arrow-right">
+      <el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
+      <el-breadcrumb-item>活动管理</el-breadcrumb-item>
+      <el-breadcrumb-item>活动列表</el-breadcrumb-item>
+      <el-breadcrumb-item>活动详情</el-breadcrumb-item>
+    </el-breadcrumb>
+  </div>
+</template>

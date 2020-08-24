@@ -8,11 +8,22 @@
       >
     </div>
 
-    <div class="header_r"></div>
+    <div class="header_r">
+      <div class="headr_d1">
+        <side-collapse class="sidecoll"></side-collapse>
+        <bread-crumb class="bread"></bread-crumb>
+      </div>
+    </div>
   </div>
 </template>
 
 <script>
+import SideCollapse from '@/components/SideCollapse'
+import BreadCrumb from '@/components/BreadCrumb'
 export default {
+  components: {
+    SideCollapse,
+    BreadCrumb
+  }
 }
 </script>
